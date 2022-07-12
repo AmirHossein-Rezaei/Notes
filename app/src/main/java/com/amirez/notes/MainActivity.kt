@@ -14,10 +14,7 @@ import com.amirez.notes.database.AppDatabase
 import com.amirez.notes.database.NoteDao
 import com.amirez.notes.databinding.ActivityMainBinding
 import com.amirez.notes.model.Note
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity(), NoteEvent {
     private lateinit var binding: ActivityMainBinding
@@ -44,10 +41,12 @@ class MainActivity : AppCompatActivity(), NoteEvent {
 
     }
 
-    private suspend fun getAllNotes() {
-        lifecycleScope.launch(Dispatchers.Default) {
-            notesList = ArrayList(dao.getAllNotes())
-        }.join()
+    private fun getAllNotes() {
+        runBlocking {
+            launch(Dispatchers.Default) {
+                notesList = ArrayList(dao.getAllNotes())
+            }
+        }
         if (notesList.isEmpty())
             showAlternativeView()
     }
@@ -57,22 +56,16 @@ class MainActivity : AppCompatActivity(), NoteEvent {
     }
 
     private fun setupRecyclerView() {
-        lifecycleScope.launch {
-            withContext(Dispatchers.Default){
-                getAllNotes()
-            }
-            withContext(Dispatchers.Main) {
-                noteLayoutManager =
-                    GridLayoutManager(this@MainActivity, 2, GridLayoutManager.VERTICAL, false)
-                noteAdapter = NoteAdapter(
-                    notesList,
-                    this@MainActivity
-                )
-                binding.rvMain.apply {
-                    adapter = noteAdapter
-                    layoutManager = noteLayoutManager
-                }
-            }
+        getAllNotes()
+        noteLayoutManager =
+            GridLayoutManager(this@MainActivity, 2, GridLayoutManager.VERTICAL, false)
+        noteAdapter = NoteAdapter(
+            notesList,
+            this@MainActivity
+        )
+        binding.rvMain.apply {
+            adapter = noteAdapter
+            layoutManager = noteLayoutManager
         }
     }
 

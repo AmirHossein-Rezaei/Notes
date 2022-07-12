@@ -31,9 +31,6 @@ class AddNewNoteActivity() : AppCompatActivity() {
         val note = Note(title, content)
 
         lifecycleScope.launch {
-            withContext(Dispatchers.Default) {
-                dao.insertNote(note)
-            }
             withContext(Dispatchers.Main) {
                 onBackPressed()
             }

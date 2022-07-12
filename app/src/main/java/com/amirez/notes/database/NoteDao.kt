@@ -21,4 +21,7 @@ interface NoteDao {
     @Query("SELECT * FROM notes_table WHERE id = :id")
     fun getNoteById(id: Int): Note
 
+    @Query("SELECT * FROM notes_table ORDER BY id DESC LIMIT 1")
+    fun getTheLastNote(): Note
+
 }

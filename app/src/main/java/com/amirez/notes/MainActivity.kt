@@ -23,14 +23,14 @@ class MainActivity : AppCompatActivity(), NoteEvent {
     private lateinit var noteLayoutManager: RecyclerView.LayoutManager
     private lateinit var notesList: ArrayList<Note>
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         dao = AppDatabase.getInstance(this).noteDao
 
-        setupRecyclerView()
+//        setupRecyclerView()
         setupToolbar()
 
         binding.fabAdd.setOnClickListener {
@@ -41,28 +41,31 @@ class MainActivity : AppCompatActivity(), NoteEvent {
 
     }
 
-    private fun getAllNotes() {
+    override fun onResume() {
+        super.onResume()
+        setupRecyclerView()// not the best way to refresh the adapter!
+    }
+
+    private fun getAllNotesOrShowAlternativeView() {
+
         runBlocking {
             launch(Dispatchers.Default) {
                 notesList = ArrayList(dao.getAllNotes())
             }
         }
-        if (notesList.isEmpty())
-            showAlternativeView()
-    }
 
-    private fun showAlternativeView() {
-        binding.alternativeViewForEmptyDatabase.visibility = View.VISIBLE
+        if (notesList.isEmpty())
+            binding.alternativeViewForEmptyDatabase.visibility = View.VISIBLE
+        else
+            binding.alternativeViewForEmptyDatabase.visibility = View.INVISIBLE
     }
 
     private fun setupRecyclerView() {
-        getAllNotes()
+        getAllNotesOrShowAlternativeView()
         noteLayoutManager =
-            GridLayoutManager(this@MainActivity, 2, GridLayoutManager.VERTICAL, false)
-        noteAdapter = NoteAdapter(
-            notesList,
-            this@MainActivity
-        )
+            GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+        noteAdapter = NoteAdapter(notesList, this)
+
         binding.rvMain.apply {
             adapter = noteAdapter
             layoutManager = noteLayoutManager
@@ -70,6 +73,7 @@ class MainActivity : AppCompatActivity(), NoteEvent {
     }
 
     private fun setupToolbar() {
+
         binding.toolbarMain.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.mi_setting -> {

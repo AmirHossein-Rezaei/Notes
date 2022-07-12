@@ -16,6 +16,7 @@ class NoteAdapter(private var notes: ArrayList<Note>, private val noteEvent: Not
         fun bindViews(note: Note) {
             binding.tvTitleItem.text = note.title
             binding.tvContent.text = note.content
+            itemView.setOnClickListener { noteEvent.onNoteClicked(note) }
         }
     }
 
@@ -31,8 +32,5 @@ class NoteAdapter(private var notes: ArrayList<Note>, private val noteEvent: Not
 
     override fun getItemCount(): Int = notes.size
 
-    fun insertNewNote(note: Note) {
-        notes.add(note)
-        notifyItemInserted(notes.size)
-    }
+
 }

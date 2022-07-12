@@ -93,7 +93,10 @@ class MainActivity : AppCompatActivity(), NoteEvent {
         }
     }
 
-    override fun insertNote(note: Note) {
-        TODO("Not yet implemented")
+    override fun onNoteClicked(note: Note) {
+        Intent(this, DetailsActivity::class.java).also {
+            it.putExtra(NOTE_KEY, note)
+            startActivity(it)
+        }
     }
 }

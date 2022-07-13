@@ -1,8 +1,9 @@
-package com.amirez.notes
+package com.amirez.notes.features
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.amirez.notes.R
 import com.amirez.notes.database.AppDatabase
 import com.amirez.notes.database.NoteDao
 import com.amirez.notes.databinding.ActivityAddNewNoteBinding
@@ -34,8 +35,8 @@ class AddNewNoteActivity() : AppCompatActivity() {
     private fun insertOrUpdateData() {
         // checks if the item is already inserted or not
         // if not then insert it, and if it is then update it
-        title = binding.etTitleAdd.text.toString()
-        content = binding.etContentAdd.text.toString()
+        title = binding.layoutEditText.etTitle.text.toString()
+        content = binding.layoutEditText.etContent.text.toString()
 
         if (!isSavedInRecords) {
             //insert new note
@@ -61,14 +62,16 @@ class AddNewNoteActivity() : AppCompatActivity() {
         Toast.makeText(this, "Note saved successfully.", Toast.LENGTH_SHORT).show()
     }
 
-    private fun entriesAreSameAsLastSave(): Boolean =
-        binding.etTitleAdd.text.toString() == title && binding.etContentAdd.text.toString() == content
+    private fun entriesAreSameAsLastSave(): Boolean {
+        return binding.layoutEditText.etTitle.text.toString() == title
+                && binding.layoutEditText.etContent.text.toString() == content
+    }
 
 
     private fun entriesAreEmpty(): Boolean {
 
-        return if (binding.etTitleAdd.text.toString().trim { it <= ' ' }.isEmpty() &&
-            binding.etContentAdd.text.toString().trim { it <= ' ' }.isEmpty()
+        return if (binding.layoutEditText.etTitle.text.toString().trim { it <= ' ' }.isEmpty() &&
+            binding.layoutEditText.etContent.text.toString().trim { it <= ' ' }.isEmpty()
         ) {
             Toast.makeText(this, "Title and description can not both be empty!", Toast.LENGTH_SHORT)
                 .show()
@@ -81,17 +84,9 @@ class AddNewNoteActivity() : AppCompatActivity() {
     private fun setupToolbar() {
         binding.toolbarAdd.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.mi_setting -> {
-                    Toast.makeText(this, "Setting pressed.", Toast.LENGTH_LONG).show()
-                    true
-                }
                 R.id.mi_done -> {
                     if (!entriesAreEmpty() && !entriesAreSameAsLastSave())
                         insertOrUpdateData()
-                    true
-                }
-                R.id.mi_about -> {
-                    Toast.makeText(this, "about pressed.", Toast.LENGTH_LONG).show()
                     true
                 }
                 else -> false

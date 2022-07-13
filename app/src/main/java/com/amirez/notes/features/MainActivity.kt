@@ -1,17 +1,16 @@
-package com.amirez.notes
+package com.amirez.notes.features
 
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.amirez.notes.NOTE_KEY
+import com.amirez.notes.NoteEvent
+import com.amirez.notes.R
 import com.amirez.notes.adapter.NoteAdapter
 import com.amirez.notes.database.AppDatabase
 import com.amirez.notes.database.NoteDao
@@ -35,7 +34,6 @@ class MainActivity : AppCompatActivity(), NoteEvent {
         dao = AppDatabase.getInstance(this).noteDao
 
 //        setupRecyclerView()
-        setupToolbar()
 
         binding.fabAdd.setOnClickListener {
             Intent(this, AddNewNoteActivity::class.java).also {
@@ -91,26 +89,7 @@ class MainActivity : AppCompatActivity(), NoteEvent {
         }
     }
 
-    private fun setupToolbar() {
 
-        binding.toolbarMain.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.mi_setting -> {
-                    Toast.makeText(this, "Setting pressed.", Toast.LENGTH_LONG).show()
-                    true
-                }
-                R.id.mi_change_view -> {
-                    Toast.makeText(this, "change view pressed.", Toast.LENGTH_LONG).show()
-                    true
-                }
-                R.id.mi_about -> {
-                    Toast.makeText(this, "about pressed.", Toast.LENGTH_LONG).show()
-                    true
-                }
-                else -> false
-            }
-        }
-    }
 
     override fun onNoteClicked(note: Note) {
         Intent(this, DetailsActivity::class.java).also {

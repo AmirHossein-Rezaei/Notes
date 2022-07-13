@@ -13,15 +13,4 @@
         android:title="Delete"
         app:showAsAction="never"/>
 
-    <item
-        android:id="@+id/mi_setting"
-        android:icon="@drawable/ic_setting"
-        android:title="Setting"
-        app:iconTint="?attr/colorOnPrimary"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/mi_about"
-        android:title="About me"
-        app:showAsAction="never" />
 </menu>

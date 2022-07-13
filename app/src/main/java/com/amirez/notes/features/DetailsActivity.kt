@@ -1,9 +1,11 @@
-package com.amirez.notes
+package com.amirez.notes.features
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.amirez.notes.NOTE_KEY
+import com.amirez.notes.R
 import com.amirez.notes.database.AppDatabase
 import com.amirez.notes.database.NoteDao
 import com.amirez.notes.databinding.ActivityDetailsBinding
@@ -37,13 +39,13 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun setupViewsWithGivenNote() {
-        binding.etTitleUpdate.setText(note.title)
-        binding.etContentUpdate.setText(note.content)
+        binding.layoutEditText.etTitle.setText(note.title)
+        binding.layoutEditText.etContent.setText(note.content)
     }
 
     private fun entriesAreEmpty(): Boolean {
-        return if (binding.etTitleUpdate.text.toString().trim { it <= ' ' }.isEmpty() &&
-            binding.etContentUpdate.text.toString().trim { it <= ' ' }.isEmpty()
+        return if (binding.layoutEditText.etTitle.text.toString().trim { it <= ' ' }.isEmpty() &&
+            binding.layoutEditText.etContent.text.toString().trim { it <= ' ' }.isEmpty()
         ) {
             Toast.makeText(this, "Title and description can not both be empty!", Toast.LENGTH_SHORT)
                 .show()
@@ -55,8 +57,8 @@ class DetailsActivity : AppCompatActivity() {
     private fun updateNote() {
         // save title and content in a variable so the
         // entriesAreSameAsLastSave() function would work
-        title = binding.etTitleUpdate.text.toString()
-        content = binding.etContentUpdate.text.toString()
+        title = binding.layoutEditText.etTitle.text.toString()
+        content = binding.layoutEditText.etContent.text.toString()
 
         note.title = title
         note.content = content
@@ -95,7 +97,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun entriesAreSameAsLastSave(): Boolean =
-        binding.etTitleUpdate.text.toString() == title && binding.etContentUpdate.text.toString() == content
+        binding.layoutEditText.etTitle.text.toString() == title && binding.layoutEditText.etContent.text.toString() == content
 
     private fun setupToolbar() {
         binding.toolbarDetails.setOnMenuItemClickListener { menuItem ->
@@ -104,18 +106,10 @@ class DetailsActivity : AppCompatActivity() {
                     showDeleteDialog()
                     true
                 }
-                R.id.mi_setting -> {
-                    Toast.makeText(this, "Setting pressed.", Toast.LENGTH_LONG).show()
-                    true
-                }
                 R.id.mi_done -> {
                     if (!entriesAreEmpty() && !entriesAreSameAsLastSave())
                         updateNote()
 
-                    true
-                }
-                R.id.mi_about -> {
-                    Toast.makeText(this, "about pressed.", Toast.LENGTH_LONG).show()
                     true
                 }
                 else -> false

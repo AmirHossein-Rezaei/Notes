@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/background_color"
-    tools:context=".DetailsActivity">
+    tools:context=".features.DetailsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -23,40 +23,11 @@
             app:titleTextColor="?attr/colorOnPrimary" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <include
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="8dp">
-
-            <EditText
-                android:id="@+id/et_title_update"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_edit_text_transparent"
-                android:hint="Title"
-                android:inputType="text"
-                android:padding="4dp"
-                android:textSize="28sp" />
-
-            <EditText
-                android:id="@+id/et_content_update"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/background_edit_text_transparent"
-                android:hint="Write here"
-                android:inputType="textMultiLine"
-                android:lineSpacingExtra="3dp"
-                android:padding="4dp"
-                android:textSize="18sp" />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        layout="@layout/module_edit_text"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:id="@+id/layout_edit_text"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

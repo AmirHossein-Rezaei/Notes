@@ -13,10 +13,16 @@ class NoteAdapter(private var notes: ArrayList<Note>, private val noteEvent: Not
     private lateinit var binding: ItemNoteBinding
 
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindViews(note: Note) {
+        fun bindViews(note: Note, pos: Int) {
             binding.tvTitleItem.text = note.title
             binding.tvContent.text = note.content
+
+
             itemView.setOnClickListener { noteEvent.onNoteClicked(note) }
+            itemView.setOnLongClickListener {
+                noteEvent.onNoteLongClicked(note, pos)
+                true
+            }
         }
     }
 
@@ -27,10 +33,15 @@ class NoteAdapter(private var notes: ArrayList<Note>, private val noteEvent: Not
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = notes[position]
-        holder.bindViews(note)
+        holder.bindViews(note, position)
     }
 
     override fun getItemCount(): Int = notes.size
+
+    fun itemDeleted(note: Note, pos: Int) {
+        notes.remove(note)
+        notifyItemRemoved(pos)
+    }
 
 
 }

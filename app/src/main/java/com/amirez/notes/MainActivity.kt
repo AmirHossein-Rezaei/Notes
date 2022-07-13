@@ -3,9 +3,12 @@ package com.amirez.notes
 import android.content.Intent
 import android.opengl.Visibility
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +17,7 @@ import com.amirez.notes.database.AppDatabase
 import com.amirez.notes.database.NoteDao
 import com.amirez.notes.databinding.ActivityMainBinding
 import com.amirez.notes.model.Note
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity(), NoteEvent {
@@ -54,10 +58,25 @@ class MainActivity : AppCompatActivity(), NoteEvent {
             }
         }
 
+        checkIfListIsEmpty()
+    }
+
+    private fun checkIfListIsEmpty() {
         if (notesList.isEmpty())
             binding.alternativeViewForEmptyDatabase.visibility = View.VISIBLE
         else
             binding.alternativeViewForEmptyDatabase.visibility = View.INVISIBLE
+    }
+
+    private fun deleteNote(note: Note, pos: Int) {
+        runBlocking {
+            launch(Dispatchers.Default) {
+                dao.deleteNote(note)
+            }
+        }
+        noteAdapter.itemDeleted(note, pos)
+        notesList.remove(note)
+        checkIfListIsEmpty()
     }
 
     private fun setupRecyclerView() {
@@ -98,5 +117,23 @@ class MainActivity : AppCompatActivity(), NoteEvent {
             it.putExtra(NOTE_KEY, note)
             startActivity(it)
         }
+    }
+
+    override fun onNoteLongClicked(note: Note, pos: Int) {
+
+        MaterialAlertDialogBuilder(
+            this,
+            R.style.MyAlertDialogTheme
+        ).setMessage("Do you want to delete this note?")
+            .setPositiveButton("Yes") { dialog, _ ->
+                deleteNote(note, pos)
+                dialog.dismiss()
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setCancelable(true)
+            .setIcon(ContextCompat.getDrawable(this, R.drawable.ic_delete))
+            .show()
     }
 }
